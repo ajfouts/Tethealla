@@ -12,17 +12,25 @@ RUN apt-get update && \
         coreutils \
         locales \
         gnutls-bin \
+        cmake \
+        build-essential \
+        git \
+        libssl-dev \
         screen && \
     locale-gen en_US.UTF-8
 
 WORKDIR /server
 
-# Grab the latest dat release binaries for Tethealla
-RUN wget -q https://github.com/kotori/Tethealla/archive/refs/tags/dat.tar.gz && \
-    tar zxf dat.tar.gz && \
-    cp -ar Tethealla-dat/* . && \
-    rm -rf Tethealla-dat && \
-    rm dat.tar.gz
+# Build the latest version from git
+RUN git clone https://github.com/ajfouts/Tethealla.git psobb_server && \
+    cd psobb_server && \
+    mkdir build && \
+    cd build && \
+    cmake .. && \
+    make -j $(nproc) && \
+    mv ./deploy/* /server && \
+    cd /server && \
+    rm -rf ./psobb_server
 
 # Copy the overrides to configs and our own tools.
 COPY . .

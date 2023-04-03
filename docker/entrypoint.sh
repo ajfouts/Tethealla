@@ -45,10 +45,11 @@ fi
 
 
 # Ship Key Check
-if [ ! -f 'shipkey.dat' ]; then
+if [ ! -f 'shipkey.initialized' ]; then
     # no shipkey, generate a new one.
     echo "shipkey.dat missing, generating a new shipkey..."
     ./bin/make_key
+    touch 'shipkey.initialized'
 fi
 
 # The 3 Tethealla services:

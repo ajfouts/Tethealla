@@ -13,7 +13,7 @@ mysqldb
 # Server IP address to bind to (your private IP)
 REPLACE_ME_INT_TETH
 # Welcome message
-Welcome to the VenusSRV PSOBB Docker Demo on linux :p
+Welcome to the Docker PSOBB server
 # Server Port (This is the port the login server listens on... it will also open port+1 for the character server... You shouldn't need to change this.)
 12000
 # Max number of client connections

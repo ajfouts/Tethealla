@@ -19,13 +19,8 @@ start_service() {
 	echo "$service_name started with pid: $svc_pid"
 }
 
-# Update IP first, this should only be run ONCE!
-#  file: ip.updated is created after the first run.
-if [ ! -f 'ip.updated' ]; then
-    ./update-ip.sh
-else
-    echo "Starting preconfigured setup."
-fi
+# Update IP, run each time in case container IP address changes
+./update-ip.sh
 
 echo "Wait for database"
 DB_READY="1"
@@ -40,16 +35,18 @@ if [ ! -f 'db.initialized' ]; then
     mysql -h psobb-db -D mysqldb -u mysqluser -pmysqlpw < ./pso_server.sql
     touch 'db.initialized'
 else
-    echo "DB already initialized."
+    echo "DB already initialized"
 fi
 
 
 # Ship Key Check
 if [ ! -f 'shipkey.initialized' ]; then
     # no shipkey, generate a new one.
-    echo "shipkey.dat missing, generating a new shipkey..."
+    echo "Generating a new shipkey..."
     ./bin/make_key
     touch 'shipkey.initialized'
+else
+    echo "Shipkey already initialized"
 fi
 
 # The 3 Tethealla services:

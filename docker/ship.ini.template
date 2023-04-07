@@ -16,7 +16,7 @@ REPLACE_ME_EXT_SHIP
 # The IP address or host name of the login server to register the ship to.
 REPLACE_ME_INT_SHIP
 # The ship name
-VenusSRV
+DockerSRV
 # The current event on the ship
 0
 #

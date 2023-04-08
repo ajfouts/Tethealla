@@ -957,6 +957,7 @@ void load_config_file()
   {
     while (fgets (&config_data[0], 255, fp) != NULL)
     {
+      strtok(config_data, "\r\n");
       if (config_data[0] != 0x23)
       {
         if ((config_index < 0x04) || (config_index > 0x04))

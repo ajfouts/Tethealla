@@ -27,20 +27,28 @@ else
     echo "Starting preconfigured setup."
 fi
 
+echo "Wait for database"
+DB_READY="1"
+while [ "${DB_READY}" -ne "0" ]
+do
+    sleep 1
+    mysql -h psobb-db -D mysqldb -u mysqluser -pmysqlpw -e '\q'
+    DB_READY="$?"
+done
+
+if [ ! -f 'db.initialized' ]; then
+    mysql -h psobb-db -D mysqldb -u mysqluser -pmysqlpw < ./pso_server.sql
+    touch 'db.initialized'
+else
+    echo "DB already initialized."
+fi
+
+
 # Ship Key Check
 if [ ! -f 'shipkey.dat' ]; then
     # no shipkey, generate a new one.
     echo "shipkey.dat missing, generating a new shipkey..."
     ./bin/make_key
-fi
-
-# Accounts Check
-if [ ! -f 'account.dat' ]; then
-    # no accounts exist!
-    echo "No Accounts exist, perhaps you should make one?"
-    echo "Make An Account with: "
-    echo "# docker-compose exec tethealla ./bin/account_add"
-    exit 1
 fi
 
 # The 3 Tethealla services:

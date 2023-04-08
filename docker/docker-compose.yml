@@ -14,6 +14,19 @@ services:
       - "5279:5279"
       - "5280:5280"
     volumes:
-      - tethealla-data:/server
+      - psobb-data:/server
+  mariadb:
+    image: mariadb:10.3
+    hostname: psobb-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: mysqldb
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysqlpw
+    ports:
+      - 3306:3306
+    volumes:
+      - psobb-db:/var/lib/mysql
 volumes:
-  tethealla-data:
+    psobb-db:
+    psobb-data:

@@ -14,6 +14,8 @@ RUN apt-get update && \
         gnutls-bin \
         cmake \
         build-essential \
+        mariadb-client \
+        default-libmysqlclient-dev \
         git \
         libssl-dev \
         screen && \
@@ -24,9 +26,11 @@ WORKDIR /server
 # Build the latest version from git
 RUN git clone https://github.com/ajfouts/Tethealla.git psobb_server && \
     cd psobb_server && \
+    git checkout docker_updates && \
+    git submodule update --init && \
     mkdir build && \
     cd build && \
-    cmake .. && \
+    cmake -DNO_SQL=OFF .. && \
     make -j $(nproc) && \
     mv ./deploy/* /server && \
     cd /server && \

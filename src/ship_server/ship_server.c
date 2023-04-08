@@ -972,10 +972,6 @@ void initialize_connection (BANANA* connect)
   {
     removeClientFromLobby (connect);
 
-    if ((connect->block > 0) && (connect->block <= serverBlocks)) {
-      blocks[connect->block - 1]->count--;
-    }
-
     if (connect->gotchardata == 1)
     {
       connect->character.playTime += (unsigned) servertime - connect->connected;
@@ -15832,6 +15828,7 @@ int32_t main()
     printf ("Out of memory!\n");
     exit (1);
   }
+  memset(connectionChunk, 0, sizeof(BANANA) * serverMaxConnections);
   connectionPtr = connectionChunk;
   for (ch=0;ch<serverMaxConnections;ch++)
   {

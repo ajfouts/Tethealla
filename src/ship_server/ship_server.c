@@ -158,7 +158,8 @@ ARMOR_DROP_RATE,
 MAG_DROP_RATE,
 TOOL_DROP_RATE,
 MESETA_DROP_RATE,
-EXPERIENCE_RATE;
+EXPERIENCE_RATE,
+RARE_REROLLS;
 uint32_t common_rates[5] = { 0 };
 
 // Rare monster appearance rates
@@ -568,6 +569,7 @@ void load_config_file()
   FILE* fp;
 
   EXPERIENCE_RATE = 1; // Default to 100% EXP
+  RARE_REROLLS = 1; // Default to one roll for rare item
 
   if ( ( fp = fopen ("ship.ini", "r" ) ) == NULL )
   {
@@ -703,6 +705,9 @@ void load_config_file()
           break;
         case 0x0D:
           ship_support_extnpc = atoi (&config_data[0]);
+          break;
+        case 0x0E:
+          RARE_REROLLS = atoi (&config_data[0]);
           break;
         default:
           break;
@@ -10160,8 +10165,8 @@ void Send62 (BANANA* client)
               }
               rare_rate = ExpandDropRate ( rare_lookup & 0xFF );
               rare_item = rare_lookup >> 8;
-              //rare_roll = rand();
-              for(int i = 0; i < 10; i++) {
+
+              for(uint32_t i = 0; i < RARE_REROLLS; i++) {
                 rare_roll = rand();
                 if  ( ( ( rare_lookup & 0xFF ) != 0 ) && ( ( rare_roll < rare_rate ) || ( l->redbox ) ) ) {
                   break;
@@ -10396,7 +10401,13 @@ void Send62 (BANANA* client)
               {
                 rare_rate = ExpandDropRate ( *rt_table2 );
                 memcpy (&rare_item, &rt_table2[1], 3);
-                rare_roll = rand();
+
+                for(uint32_t i = 0; i < RARE_REROLLS; i++) {
+                  rare_roll = rand();
+                  if  ( ( rare_roll < rare_rate ) || ( l->redbox ) ) {
+                    break;
+                  }
+                }
                 if ( ( rare_roll < rare_rate ) || ( l->redbox == 1 ) )
                 {
                   box_rare = 1;
